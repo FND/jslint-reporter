@@ -10,13 +10,29 @@ var JSLINT = require(__dirname + "/jslint.js").JSLINT;
 var main = function(args) {
 	var valueOptions = ["indent", "maxerr", "maxlen"];
 	args = parseOptions(args, valueOptions);
-	// TODO: post-process valueOptions (integers, arrays)
-	sys.debug("JSLint options: " + sys.inspect(args.opts)); // XXX: optional?
+	var opts = args.opts;
+	args = args.anon; // XXX: variable reuse messy!?
 
-	var filepath = args.anon[0]; // TODO: support for multiple files
+	// The Good Parts
+	if(opts.goodparts) {
+		delete opts.goodparts;
+		opts.white = true;
+		opts.onevar = true;
+		opts.undef = true;
+		opts.newcap = true;
+		opts.nomen = true;
+		opts.regexp = true;
+		opts.plusplus = true;
+		opts.bitwise = true;
+	}
+
+	// TODO: post-process valueOptions (integers, arrays)
+	sys.debug("JSLint options: " + sys.inspect(opts)); // XXX: optional?
+
+	var filepath = args[0]; // TODO: support for multiple files
 	var src = fs.readFileSync(filepath, "utf-8"); // XXX: UTF-8 always suitable?
 
-	var pass = JSLINT(src, args.opts);
+	var pass = JSLINT(src, opts);
 	if(!pass) {
 		var errors = formatOutput(JSLINT.errors, filepath);
 		sys.print(errors.join("\n") + "\n");
