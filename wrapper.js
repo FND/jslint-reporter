@@ -11,8 +11,11 @@ var main = function(args) {
 	var valueOptions = ["indent", "maxerr", "maxlen"];
 	args = parseOptions(args, valueOptions);
 	// TODO: post-process valueOptions (integers, arrays)
+	sys.debug("JSLint options: " + sys.inspect(args.opts)); // XXX: optional?
+
 	var filepath = args.anon[0]; // TODO: support for multiple files
 	var src = fs.readFileSync(filepath, "utf-8"); // XXX: UTF-8 always suitable?
+
 	var pass = JSLINT(src, args.opts);
 	if(!pass) {
 		var errors = formatOutput(JSLINT.errors, filepath);
