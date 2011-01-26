@@ -1,0 +1,20 @@
+JSLint Reporter
+Node.js wrapper for JSLint
+
+
+Usage:
+  $ node wrapper.js [options] <filepath>
+
+(requires `make jslint` to generate jslint.js alongside wrapper.js)
+
+
+Options:
+
+  --<name>
+    names as per http://www.jslint.com/lint.html#options (e.g. "--strict")
+
+  --goodparts
+    shortcut for recommended options
+
+
+Using Douglas Crockford's JSLint (http://jslint.com).

@@ -1,8 +1,3 @@
-// Node.js wrapper for JSLint
-//
-// Usage:
-//   $ node wrapper.js [options] filepath
-
 var sys = require("sys"); // XXX: renamed in Node.js v0.3.0
 var fs = require("fs");
 var JSLINT = require(__dirname + "/jslint.js").JSLINT;
@@ -41,7 +36,8 @@ var main = function(args) {
 
 var formatOutput = function(errors, filepath) {
 	var lines = [];
-	for(var i = 0; i < errors.length; i++) {
+	var i;
+	for(i = 0; i < errors.length; i++) {
 		var error = errors[i];
 		if(error) { // last item might be null (if linting was aborted)
 			var line = [filepath, error.line, error.character, error.reason].
@@ -55,7 +51,8 @@ var formatOutput = function(errors, filepath) {
 var parseOptions = function(args, valueOptions) { // XXX: rename valueOptions argument -- TODO: use dedicated third-party module
 	var opts = {};
 	var anon = [];
-	for(var i = 2; i < args.length; i++) {
+	var i;
+	for(i = 2; i < args.length; i++) {
 		var arg = args[i];
 		if(arg.indexOf("--") == 0) {
 			var name = arg.substr(2);
