@@ -32,6 +32,8 @@ var main = function(args) {
 		var errors = formatOutput(JSLINT.errors, filepath);
 		sys.print(errors.join("\n") + "\n");
 	}
+
+	exit(pass ? 0 : 1);
 };
 
 var formatOutput = function(errors, filepath) {
@@ -70,6 +72,10 @@ var parseOptions = function(args, valueOptions) { // XXX: rename valueOptions ar
 		opts: opts,
 		anon: anon
 	};
+};
+
+var exit = function(status) {
+	process.exit(status);
 };
 
 main(process.argv);
