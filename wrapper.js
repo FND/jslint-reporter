@@ -1,12 +1,24 @@
 var sys = require("sys"); // XXX: renamed in Node.js v0.3.0
 var fs = require("fs");
-var JSLINT = require(__dirname + "/jslint.js").JSLINT;
+
+JSLINT_PATH = __dirname + "/jslint.js";
 
 var main = function(args) {
 	var valueOptions = ["indent", "maxerr", "maxlen"];
 	args = parseOptions(args, valueOptions);
 	var opts = args.opts;
 	args = args.anon; // XXX: variable reuse messy!?
+
+	if(opts.upgrade) {
+		getJSLint(function(contents) {
+			contents += "\nmodule.exports.JSLINT = JSLINT;\n";
+			fs.writeFileSync(JSLINT_PATH, contents)
+			exit(true);
+		});
+		return;
+	} else {
+		var JSLINT = require(JSLINT_PATH).JSLINT;
+	}
 
 	// The Good Parts
 	if(opts.goodparts) {
@@ -33,7 +45,30 @@ var main = function(args) {
 		sys.print(errors.join("\n") + "\n");
 	}
 
-	exit(pass ? 0 : 1);
+	exit(pass);
+};
+
+var getJSLint = function(callback) {
+	var host = "github.com";
+	var path = "/douglascrockford/JSLint/raw/master/fulljslint.js";
+	var http = require("http");
+	var client = http.createClient(443, host, true);
+	var request = client.request("GET", path, { "host": host });
+	request.end();
+	request.on("response", function(response) {
+		if(response.statusCode != 200) {
+			exit(false, "failed to retrieve JSLint file");
+		}
+		response.setEncoding("utf8");
+		var body = [];
+		response.on("data", function(chunk) {
+			body.push(chunk);
+		});
+		response.on("end", function() {
+			body = body.join("");
+			callback(body);
+		});
+	});
 };
 
 var formatOutput = function(errors, filepath) {
@@ -74,8 +109,11 @@ var parseOptions = function(args, valueOptions) { // XXX: rename valueOptions ar
 	};
 };
 
-var exit = function(status) {
-	process.exit(status);
+var exit = function(status, msg) {
+	if(msg) {
+		sys.debug(msg);
+	}
+	process.exit(status ? 0 : 1);
 };
 
 main(process.argv);
