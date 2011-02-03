@@ -1,7 +1,13 @@
 var sys = require("sys"); // XXX: renamed in Node.js v0.3.0
 var fs = require("fs");
+var vm;
+try {
+	vm = require("vm");
+} catch(exc) { // Node.js v0.2
+	vm = process.binding("evals").Script;
+}
 
-JSLINT_PATH = __dirname + "/jslint.js";
+JSLINT_PATH = __dirname + "/fulljslint.js";
 
 var main = function(args) {
 	var valueOptions = ["indent", "maxerr", "maxlen"];
@@ -11,13 +17,10 @@ var main = function(args) {
 
 	if(opts.upgrade) {
 		getJSLint(function(contents) {
-			contents += "\nmodule.exports.JSLINT = JSLINT;\n";
 			fs.writeFileSync(JSLINT_PATH, contents)
 			exit(true);
 		});
 		return;
-	} else {
-		var JSLINT = require(JSLINT_PATH).JSLINT;
 	}
 
 	// The Good Parts
@@ -37,11 +40,20 @@ var main = function(args) {
 	sys.debug("JSLint options: " + sys.inspect(opts)); // XXX: optional?
 
 	var filepath = args[0]; // TODO: support for multiple files
-	var src = fs.readFileSync(filepath, "utf-8"); // XXX: UTF-8 always suitable?
+	var src = fs.readFileSync(filepath, "utf-8");
+	var jslint = fs.readFileSync(JSLINT_PATH, "utf-8");
 
-	var pass = JSLINT(src, opts);
+	var sandbox = {
+		SRC: src,
+		OPTS: opts
+	};
+	vm.runInNewContext(jslint + "\nJSLINT(SRC, OPTS);", sandbox);
+
+	var errors = sandbox.JSLINT.errors;
+	var pass = errors.length == 0;
+
 	if(!pass) {
-		var errors = formatOutput(JSLINT.errors, filepath);
+		errors = formatOutput(errors, filepath);
 		sys.print(errors.join("\n") + "\n");
 	}
 
