@@ -10,8 +10,7 @@ try {
 JSLINT_PATH = __dirname + "/fulljslint.js";
 
 var main = function(args) {
-	var valueOptions = ["indent", "maxerr", "maxlen"];
-	args = parseOptions(args, valueOptions);
+	args = parseOptions(args.slice(2)); // ignore Node command and script file
 	var opts = args.opts;
 	args = args.anon; // XXX: variable reuse messy!?
 
@@ -26,14 +25,11 @@ var main = function(args) {
 	// The Good Parts
 	if(opts.goodparts) {
 		delete opts.goodparts;
-		opts.white = true;
-		opts.onevar = true;
-		opts.undef = true;
-		opts.newcap = true;
-		opts.nomen = true;
-		opts.regexp = true;
-		opts.plusplus = true;
-		opts.bitwise = true;
+		var goodparts = ["white", "onevar", "undef", "newcap", "nomen",
+			"regexp", "plusplus", "bitwise"];
+		goodparts.forEach(function(item, i) {
+			opts[item] = opts[item] !== false ? true : false;
+		});
 	}
 
 	// TODO: post-process valueOptions (integers, arrays)
@@ -97,19 +93,39 @@ var formatOutput = function(errors, filepath) {
 	return lines;
 };
 
-var parseOptions = function(args, valueOptions) { // XXX: rename valueOptions argument -- TODO: use dedicated third-party module
+var parseOptions = function(args) {
 	var opts = {};
 	var anon = [];
 	var i;
-	for(i = 2; i < args.length; i++) {
+	for(i = 0; i < args.length; i++) {
 		var arg = args[i];
 		if(arg.indexOf("--") == 0) {
-			var name = arg.substr(2);
-			if(valueOptions.indexOf(name) != -1) {
-				i++;
-				opts[name] = args[i];
+			arg = arg.substr(2);
+			if(arg.indexOf("=") == -1) {
+				opts[arg] = true;
 			} else {
-				opts[name] = true;
+				var pair = arg.split("="); // NB: assumes exactly one "="
+				name = pair[0];
+				value = pair[1];
+
+				// infer value type
+				if(value === "false") {
+					value = false;
+				}
+				switch(name) { // XXX: special-casing JSLint-specifics
+					case "indent":
+					case "maxerr":
+					case "maxlen":
+						value = parseInt(value, 10);
+						break;
+					case "predef":
+						value = value.split(",");
+						break;
+					default:
+						break;
+				}
+
+				opts[name] = value;
 			}
 		} else {
 			anon.push(arg);

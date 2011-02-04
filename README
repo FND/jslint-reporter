@@ -11,11 +11,14 @@ Usage:
 
 Options:
 
-  --<name>
-    names as per http://www.jslint.com/lint.html#options (e.g. "--strict")
+  --<name>[=<value>]
+    names as per http://www.jslint.com/lint.html#options
+    (e.g. "--strict --predef=foo,bar,baz --maxlen=80")
 
   --goodparts
     shortcut for recommended options
+    NB: Individual recommendations can be overridden by specifying the
+        respective option separately (e.g. "--goodparts --onevar=false").
 
   --upgrade
     download latest version of JSLint
