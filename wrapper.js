@@ -11,14 +11,18 @@ VERSION = "0.9.0";
 JSLINT_PATH = __dirname + "/fulljslint.js";
 
 var main = function(args) {
-	args = parseOptions(args.slice(2)); // ignore Node command and script file
-	var opts = args.opts;
-	args = args.anon; // XXX: variable reuse messy!?
+	args = args.slice(2); // ignore Node command and script file
+	var opts = parseOptions(args);
+	var anon = opts.anon;
+	opts = opts.opts;
 
 	var jslint = fs.readFileSync(JSLINT_PATH, "utf-8");
 	var sandbox = {};
 
-	if(opts.version) {
+	if(opts.help || args.length == 0) {
+		var readme = fs.readFileSync(__dirname + "/README", "utf-8");
+		exit(args.length > 0, readme);
+	} else if(opts.version) {
 		vm.runInNewContext(jslint, sandbox);
 		exit(true, "JSLint Reporter v" + VERSION + "\n" +
 			"JSLint v" + sandbox.JSLINT.edition);
@@ -42,7 +46,7 @@ var main = function(args) {
 
 	sys.debug("JSLint options: " + sys.inspect(opts)); // XXX: optional?
 
-	var filepath = args[0]; // TODO: support for multiple files
+	var filepath = anon[0]; // TODO: support for multiple files
 	var src = fs.readFileSync(filepath, "utf-8");
 
 	sandbox = {

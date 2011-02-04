@@ -24,4 +24,7 @@ Options:
     download latest version of JSLint
 
   --version
-    display JSLint Reporter version number
+    display version numbers for both JSLint Reporter and JSLint
+
+  --help
+    display this usage information
