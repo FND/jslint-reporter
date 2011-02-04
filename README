@@ -22,3 +22,6 @@ Options:
 
   --upgrade
     download latest version of JSLint
+
+  --version
+    display JSLint Reporter version number

@@ -7,6 +7,7 @@ try {
 	vm = process.binding("evals").Script;
 }
 
+VERSION = "0.9.0";
 JSLINT_PATH = __dirname + "/fulljslint.js";
 
 var main = function(args) {
@@ -14,7 +15,14 @@ var main = function(args) {
 	var opts = args.opts;
 	args = args.anon; // XXX: variable reuse messy!?
 
-	if(opts.upgrade) {
+	var jslint = fs.readFileSync(JSLINT_PATH, "utf-8");
+	var sandbox = {};
+
+	if(opts.version) {
+		vm.runInNewContext(jslint, sandbox);
+		exit(true, "JSLint Reporter v" + VERSION + "\n" +
+			"JSLint v" + sandbox.JSLINT.edition);
+	} else if(opts.upgrade) {
 		getJSLint(function(contents) {
 			fs.writeFileSync(JSLINT_PATH, contents)
 			exit(true);
@@ -32,14 +40,12 @@ var main = function(args) {
 		});
 	}
 
-	// TODO: post-process valueOptions (integers, arrays)
 	sys.debug("JSLint options: " + sys.inspect(opts)); // XXX: optional?
 
 	var filepath = args[0]; // TODO: support for multiple files
 	var src = fs.readFileSync(filepath, "utf-8");
-	var jslint = fs.readFileSync(JSLINT_PATH, "utf-8");
 
-	var sandbox = {
+	sandbox = {
 		SRC: src,
 		OPTS: opts
 	};
@@ -139,7 +145,7 @@ var parseOptions = function(args) {
 
 var exit = function(status, msg) {
 	if(msg) {
-		sys.debug(msg);
+		process.binding("stdio").writeError(msg + "\n");
 	}
 	process.exit(status ? 0 : 1);
 };
