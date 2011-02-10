@@ -7,7 +7,7 @@ try {
 	vm = process.binding("evals").Script;
 }
 
-VERSION = "0.9.0";
+VERSION = "0.9.5";
 JSLINT_PATH = __dirname + "/fulljslint.js";
 
 var main = function(args) {
@@ -17,12 +17,12 @@ var main = function(args) {
 	opts = opts.opts;
 
 	var jslint = fs.readFileSync(JSLINT_PATH, "utf-8");
-	var sandbox = {};
 
 	if(opts.help || args.length == 0) {
 		var readme = fs.readFileSync(__dirname + "/README", "utf-8");
 		exit(args.length > 0, readme);
 	} else if(opts.version) {
+		var sandbox = {};
 		vm.runInNewContext(jslint, sandbox);
 		exit(true, "JSLint Reporter v" + VERSION + "\n" +
 			"JSLint v" + sandbox.JSLINT.edition);
@@ -46,20 +46,27 @@ var main = function(args) {
 
 	sys.debug("JSLint options: " + sys.inspect(opts)); // XXX: optional?
 
-	var filepath = anon[0]; // TODO: support for multiple files
-	var src = fs.readFileSync(filepath, "utf-8");
-
-	sandbox = {
-		SRC: src,
-		OPTS: opts
+	var doLint = function(filepath) {
+		var src = fs.readFileSync(filepath, "utf-8");
+		var sandbox = {
+			SRC: src,
+			OPTS: opts
+		};
+		vm.runInNewContext(jslint + "\nJSLINT(SRC, OPTS);", sandbox);
+		return sandbox.JSLINT.errors;
 	};
-	vm.runInNewContext(jslint + "\nJSLINT(SRC, OPTS);", sandbox);
 
-	var errors = sandbox.JSLINT.errors;
+	var errors = [];
+	var i;
+	for(i = 0; i < anon.length; i++) {
+		var filepath = anon[i];
+		var err = doLint(filepath);
+		err = formatOutput(err, filepath);
+		errors = errors.concat(err);
+	}
 	var pass = errors.length == 0;
 
 	if(!pass) {
-		errors = formatOutput(errors, filepath);
 		sys.print(errors.join("\n") + "\n");
 	}
 
