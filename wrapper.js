@@ -11,27 +11,29 @@ var main = function(args) {
 	var anon = opts.anon;
 	opts = opts.opts;
 
-	var jslint = fs.readFileSync(JSLINT_PATH, "utf-8");
-
 	if(opts.verbose) {
 		delete opts.verbose;
 		var verbose = true;
 	}
-
 	if(opts.help || args.length == 0) {
 		var readme = fs.readFileSync(__dirname + "/README", "utf-8");
 		exit(args.length > 0, readme);
-	} else if(opts.version) {
-		var sandbox = {};
-		vm.runInNewContext(jslint, sandbox);
-		exit(true, "JSLint Reporter v" + VERSION + "\n" +
-			"JSLint v" + sandbox.JSLINT.edition);
-	} else if(opts.upgrade) {
+	}
+	if(opts.upgrade) {
 		getJSLint(function(contents) {
 			fs.writeFileSync(JSLINT_PATH, contents)
 			exit(true);
 		});
 		return;
+	}
+
+	var jslint = fs.readFileSync(JSLINT_PATH, "utf-8");
+
+	if(opts.version) {
+		var sandbox = {};
+		vm.runInNewContext(jslint, sandbox);
+		exit(true, "JSLint Reporter v" + VERSION + "\n" +
+			"JSLint v" + sandbox.JSLINT.edition);
 	}
 
 	// The Good Parts
