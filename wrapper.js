@@ -18,6 +18,11 @@ var main = function(args) {
 
 	var jslint = fs.readFileSync(JSLINT_PATH, "utf-8");
 
+	if(opts.verbose) {
+		delete opts.verbose;
+		var verbose = true;
+	}
+
 	if(opts.help || args.length == 0) {
 		var readme = fs.readFileSync(__dirname + "/README", "utf-8");
 		exit(args.length > 0, readme);
@@ -44,7 +49,10 @@ var main = function(args) {
 		});
 	}
 
-	sys.debug("JSLint options: " + sys.inspect(opts)); // XXX: optional?
+	if(verbose) {
+		process.binding("stdio").writeError("JSLint options: " +
+			sys.inspect(opts) + "\n");
+	}
 
 	var doLint = function(filepath) {
 		var src = fs.readFileSync(filepath, "utf-8");
@@ -68,6 +76,9 @@ var main = function(args) {
 
 	if(!pass) {
 		sys.print(errors.join("\n") + "\n");
+		if(verbose) {
+			process.binding("stdio").writeError(errors.length + " errors");
+		}
 	}
 
 	exit(pass);
