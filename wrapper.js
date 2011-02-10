@@ -79,13 +79,12 @@ var main = function(args) {
 };
 
 var getJSLint = function(callback) {
-	var host = "github.com";
-	var path = "/douglascrockford/JSLint/raw/master/fulljslint.js";
-	var http = require("http");
-	var client = http.createClient(443, host, true);
-	var request = client.request("GET", path, { "host": host });
-	request.end();
-	request.on("response", function(response) {
+	var https = require("https");
+	var options = {
+		host: "github.com",
+		path: "/douglascrockford/JSLint/raw/master/fulljslint.js"
+	};
+	https.get(options, function(response) {
 		if(response.statusCode != 200) {
 			exit(false, "failed to retrieve JSLint file");
 		}
