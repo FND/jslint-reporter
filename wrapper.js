@@ -1,13 +1,8 @@
-var sys = require("sys"); // XXX: renamed in Node.js v0.3.0
+var util = require("util");
 var fs = require("fs");
-var vm;
-try {
-	vm = require("vm");
-} catch(exc) { // Node.js v0.2
-	vm = process.binding("evals").Script;
-}
+var vm = require("vm");
 
-VERSION = "0.9.5";
+VERSION = "0.9.6";
 JSLINT_PATH = __dirname + "/fulljslint.js";
 
 var main = function(args) {
@@ -50,8 +45,7 @@ var main = function(args) {
 	}
 
 	if(verbose) {
-		process.binding("stdio").writeError("JSLint options: " +
-			sys.inspect(opts) + "\n");
+		process.stderr.write("JSLint options: " + util.inspect(opts) + "\n");
 	}
 
 	var doLint = function(filepath) {
@@ -75,9 +69,9 @@ var main = function(args) {
 	var pass = errors.length == 0;
 
 	if(!pass) {
-		sys.print(errors.join("\n") + "\n");
+		util.print(errors.join("\n") + "\n");
 		if(verbose) {
-			process.binding("stdio").writeError(errors.length + " errors");
+			process.stderr.write(errors.length + " errors\n");
 		}
 	}
 
@@ -167,7 +161,7 @@ var parseOptions = function(args) {
 
 var exit = function(status, msg) {
 	if(msg) {
-		process.binding("stdio").writeError(msg + "\n");
+		process.stderr.write(msg + "\n");
 	}
 	process.exit(status ? 0 : 1);
 };
