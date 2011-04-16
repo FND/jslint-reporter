@@ -3,7 +3,7 @@ var fs = require("fs");
 var vm = require("vm");
 
 VERSION = "0.9.6";
-JSLINT_PATH = __dirname + "/fulljslint.js";
+JSLINT_PATH = __dirname + "/jslint.js";
 
 var main = function(args) {
 	args = args.slice(2); // ignore Node command and script file
@@ -84,7 +84,7 @@ var getJSLint = function(callback) {
 	var https = require("https");
 	var options = {
 		host: "github.com",
-		path: "/douglascrockford/JSLint/raw/master/fulljslint.js"
+		path: "/douglascrockford/JSLint/raw/master/jslint.js"
 	};
 	https.get(options, function(response) {
 		if(response.statusCode != 200) {
