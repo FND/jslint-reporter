@@ -5,7 +5,7 @@ var util = require("util");
 var fs = require("fs");
 var vm = require("vm");
 
-var VERSION = "0.9.6";
+var VERSION = "0.9.7";
 var JSLINT_PATH = __dirname + "/jslint.js";
 
 var main = function(args) {
