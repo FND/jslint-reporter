@@ -1,9 +1,12 @@
+/*jslint nomen: false */
+/*global require, process, __dirname */
+
 var util = require("util");
 var fs = require("fs");
 var vm = require("vm");
 
-VERSION = "0.9.6";
-JSLINT_PATH = __dirname + "/jslint.js";
+var VERSION = "0.9.6";
+var JSLINT_PATH = __dirname + "/jslint.js";
 
 var main = function(args) {
 	args = args.slice(2); // ignore Node command and script file
@@ -11,17 +14,18 @@ var main = function(args) {
 	var anon = opts.anon;
 	opts = opts.opts;
 
+	var verbose = false;
 	if(opts.verbose) {
 		delete opts.verbose;
-		var verbose = true;
+		verbose = true;
 	}
-	if(opts.help || args.length == 0) {
+	if(opts.help || args.length === 0) {
 		var readme = fs.readFileSync(__dirname + "/README", "utf-8");
 		exit(args.length > 0, readme);
 	}
 	if(opts.upgrade) {
 		getJSLint(function(contents) {
-			fs.writeFileSync(JSLINT_PATH, contents)
+			fs.writeFileSync(JSLINT_PATH, contents);
 			exit(true);
 		});
 		return;
@@ -68,7 +72,7 @@ var main = function(args) {
 		err = formatOutput(err, filepath);
 		errors = errors.concat(err);
 	}
-	var pass = errors.length == 0;
+	var pass = errors.length === 0;
 
 	if(!pass) {
 		util.print(errors.join("\n") + "\n");
@@ -87,7 +91,7 @@ var getJSLint = function(callback) {
 		path: "/douglascrockford/JSLint/raw/master/jslint.js"
 	};
 	https.get(options, function(response) {
-		if(response.statusCode != 200) {
+		if(response.statusCode !== 200) {
 			exit(false, "failed to retrieve JSLint file");
 		}
 		response.setEncoding("utf8");
@@ -122,14 +126,14 @@ var parseOptions = function(args) {
 	var i;
 	for(i = 0; i < args.length; i++) {
 		var arg = args[i];
-		if(arg.indexOf("--") == 0) {
+		if(arg.indexOf("--") === 0) {
 			arg = arg.substr(2);
-			if(arg.indexOf("=") == -1) {
+			if(arg.indexOf("=") === -1) {
 				opts[arg] = true;
 			} else {
 				var pair = arg.split("="); // NB: assumes exactly one "="
-				name = pair[0];
-				value = pair[1];
+				var name = pair[0];
+				var value = pair[1];
 
 				// infer value type
 				if(value === "false") {
