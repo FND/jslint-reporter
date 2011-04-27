@@ -5,7 +5,7 @@ var util = require("util");
 var fs = require("fs");
 var vm = require("vm");
 
-var VERSION = "0.9.7";
+var VERSION = "1.0.0";
 var JSLINT_PATH = __dirname + "/jslint.js";
 
 var main = function(args) {
@@ -61,7 +61,15 @@ var main = function(args) {
 			OPTS: opts
 		};
 		vm.runInNewContext(jslint + "\nJSLINT(SRC, OPTS);", sandbox);
-		return sandbox.JSLINT.errors;
+
+		var data = sandbox.JSLINT.data();
+		var implied = (data.implieds || []).map(function(item) {
+			return transformWarning(item, "implied global");
+		});
+		var unused = (data.unused || []).map(function(item) {
+			return transformWarning(item, "unused variable");
+		});
+		return (data.errors || []).concat(implied).concat(unused);
 	};
 
 	var errors = [];
@@ -118,6 +126,15 @@ var formatOutput = function(errors, filepath) {
 		}
 	}
 	return lines;
+};
+
+// generate an error (line, character, reason) from a warning (line, name)
+var transformWarning = function(item, prefix) {
+	return {
+		line: item.line,
+		character: 0,
+		reason: prefix + ": " + item.name
+	};
 };
 
 var parseOptions = function(args) {
