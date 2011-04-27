@@ -8,6 +8,8 @@ var vm = require("vm");
 var VERSION = "1.0.0";
 var JSLINT_PATH = __dirname + "/jslint.js";
 
+var getJSLint, formatOutput, transformWarning, parseOptions, exit;
+
 var main = function(args) {
 	args = args.slice(2); // ignore Node command and script file
 	var opts = parseOptions(args);
@@ -74,7 +76,7 @@ var main = function(args) {
 
 	var errors = [];
 	var i;
-	for(i = 0; i < anon.length; i++) {
+	for(i = 0; i < anon.length; i += 1) {
 		var filepath = anon[i];
 		var err = doLint(filepath);
 		err = formatOutput(err, filepath);
@@ -92,7 +94,7 @@ var main = function(args) {
 	exit(pass);
 };
 
-var getJSLint = function(callback) {
+getJSLint = function(callback) {
 	var https = require("https");
 	var options = {
 		host: "github.com",
@@ -114,10 +116,10 @@ var getJSLint = function(callback) {
 	});
 };
 
-var formatOutput = function(errors, filepath) {
+formatOutput = function(errors, filepath) {
 	var lines = [];
 	var i;
-	for(i = 0; i < errors.length; i++) {
+	for(i = 0; i < errors.length; i += 1) {
 		var error = errors[i];
 		if(error) { // last item might be null (if linting was aborted)
 			var line = [filepath, error.line, error.character, error.reason].
@@ -129,7 +131,7 @@ var formatOutput = function(errors, filepath) {
 };
 
 // generate an error (line, character, reason) from a warning (line, name)
-var transformWarning = function(item, prefix) {
+transformWarning = function(item, prefix) {
 	return {
 		line: item.line,
 		character: 0,
@@ -137,11 +139,11 @@ var transformWarning = function(item, prefix) {
 	};
 };
 
-var parseOptions = function(args) {
+parseOptions = function(args) {
 	var opts = {};
 	var anon = [];
 	var i;
-	for(i = 0; i < args.length; i++) {
+	for(i = 0; i < args.length; i += 1) {
 		var arg = args[i];
 		if(arg.indexOf("--") === 0) {
 			arg = arg.substr(2);
@@ -181,7 +183,7 @@ var parseOptions = function(args) {
 	};
 };
 
-var exit = function(status, msg) {
+exit = function(status, msg) {
 	if(msg) {
 		process.stderr.write(msg + "\n");
 	}
