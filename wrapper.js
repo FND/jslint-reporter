@@ -5,7 +5,7 @@ var util = require("util");
 var fs = require("fs");
 var vm = require("vm");
 
-var VERSION = "1.0.0";
+var VERSION = "1.0.1";
 var JSLINT_PATH = __dirname + "/jslint.js";
 
 var getJSLint, formatOutput, transformWarning, parseOptions, exit;
@@ -28,6 +28,7 @@ var main = function(args) {
 	if(opts.upgrade) {
 		getJSLint(function(contents) {
 			fs.writeFileSync(JSLINT_PATH, contents);
+			main([null, null, "--version"]); // XXX: hacky!?
 			exit(true);
 		});
 		return;
