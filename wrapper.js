@@ -35,8 +35,8 @@ var main = function(args) {
 	var jslint = fs.readFileSync(JSLINT_PATH, "utf-8");
 
 	if(opts.version) {
-		var pkg_info = fs.readFileSync(__dirname + "/package.json");
-		var version = JSON.parse(pkg_info, "utf-8").version;
+		var pkgInfo = fs.readFileSync(__dirname + "/package.json");
+		var version = JSON.parse(pkgInfo, "utf-8").version;
 		var sandbox = {};
 		vm.runInNewContext(jslint, sandbox);
 		exit(true, "JSLint Reporter v" + version + "\n" +
