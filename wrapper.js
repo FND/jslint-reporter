@@ -4,7 +4,6 @@ var util = require("util");
 var fs = require("fs");
 var vm = require("vm");
 
-var VERSION = "1.0.2";
 var JSLINT_PATH = __dirname + "/jslint.js";
 
 var getJSLint, formatOutput, transformWarning, parseOptions, exit;
@@ -36,9 +35,11 @@ var main = function(args) {
 	var jslint = fs.readFileSync(JSLINT_PATH, "utf-8");
 
 	if(opts.version) {
+		var pkg_info = fs.readFileSync(__dirname + "/package.json");
+		var version = JSON.parse(pkg_info, "utf-8").version;
 		var sandbox = {};
 		vm.runInNewContext(jslint, sandbox);
-		exit(true, "JSLint Reporter v" + VERSION + "\n" +
+		exit(true, "JSLint Reporter v" + version + "\n" +
 			"JSLint v" + sandbox.JSLINT.edition);
 	}
 
