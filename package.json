@@ -2,7 +2,7 @@
 	"name": "jslint-reporter",
 	"description": "wrapper for JSLint (http://jslint.com)",
 	"url" : "https://github.com/FND/jslint-reporter",
-	"version": "1.0.2",
+	"version": "1.1.0",
 	"author": "FND",
 	"contributors" : [],
 	"keywords" : ["JSLint", "lint", "code-quality"],
