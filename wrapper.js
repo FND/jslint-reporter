@@ -1,11 +1,12 @@
 /*jslint node: true, nomen: false */
 
-var util = require("util");
-var fs = require("fs");
-var vm = require("vm");
+var fs = require("fs"),
+	path = require("path"),
+	vm = require("vm"),
+	util = require("util");
 
 var VERSION = "1.0.2";
-var JSLINT_PATH = __dirname + "/jslint.js";
+var JSLINT_PATH = path.join(__dirname, "jslint.js");
 
 var getJSLint, formatOutput, transformWarning, parseOptions, exit;
 
@@ -21,7 +22,7 @@ var main = function(args) {
 		verbose = true;
 	}
 	if(opts.help || args.length === 0) {
-		var readme = fs.readFileSync(__dirname + "/README", "utf-8");
+		var readme = fs.readFileSync(path.join(__dirname, "README"), "utf-8");
 		exit(args.length > 0, readme);
 	}
 	if(opts.upgrade) {
