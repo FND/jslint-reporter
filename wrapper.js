@@ -1,11 +1,10 @@
-/*jslint nomen: false */
-/*global require, process, __dirname */
+/*jslint node: true, nomen: false */
 
 var util = require("util");
 var fs = require("fs");
 var vm = require("vm");
 
-var VERSION = "1.0.1";
+var VERSION = "1.0.2";
 var JSLINT_PATH = __dirname + "/jslint.js";
 
 var getJSLint, formatOutput, transformWarning, parseOptions, exit;
@@ -63,9 +62,10 @@ var main = function(args) {
 			SRC: src,
 			OPTS: opts
 		};
-		vm.runInNewContext(jslint + "\nJSLINT(SRC, OPTS);", sandbox);
+		var code = "JSLINT(SRC, OPTS); var data = JSLINT.data();";
+		vm.runInNewContext(jslint + "\n" + code, sandbox);
 
-		var data = sandbox.JSLINT.data();
+		var data = sandbox.data;
 		var implied = (data.implieds || []).map(function(item) {
 			return transformWarning(item, "implied global");
 		});
