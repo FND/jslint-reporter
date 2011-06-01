@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-err=`node wrapper.js --goodparts`
+err=`node wrapper.js --goodparts $@`
 
 if [ -z "$err" ]; then
 	exit 0

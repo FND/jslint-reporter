@@ -4,7 +4,7 @@
 	"url" : "https://github.com/FND/jslint-reporter",
 	"version": "1.1.0",
 	"author": "FND",
-	"contributors" : [],
+	"contributors" : ["Douglas Crockford"],
 	"keywords" : ["JSLint", "lint", "code-quality"],
 	"dependencies" : [],
 	"repository" : {
