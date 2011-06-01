@@ -94,7 +94,7 @@ var main = function(args) {
 		}
 	}
 
-	exit(pass);
+	return pass;
 };
 
 getJSLint = function(callback) {
@@ -194,7 +194,8 @@ exit = function(status, msg) {
 };
 
 if(!module.parent) { // executed directly
-	main(process.argv);
+	var status = main(process.argv);
+	exit(status);
 } else { // imported
 	exports.main = main;
 	exports.filename = __filename;
