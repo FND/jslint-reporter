@@ -13,8 +13,8 @@
 	},
 	"lib": ".",
 	"main": "./wrapper.js",
-	"bin": "./jslint-reporter",
+	"bin": "bin/jslint-reporter",
 	"scripts": {
-		"install": "./jslint-reporter --upgrade"
+		"install": "bin/jslint-reporter --upgrade"
 	}
 }

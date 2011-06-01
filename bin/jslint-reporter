@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+script_path=$(node <<EOF
+var jslr = require("../jslint-reporter");
+console.log(jslr.filename);
+EOF
+) # hacky, but is there an alternative?
+
+err=`node "$script_path" --goodparts $@`
+
+if [ -z "$err" ]; then
+	exit 0
+else
+	echo "$err"
+	exit 1
+fi

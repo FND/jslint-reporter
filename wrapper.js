@@ -193,4 +193,9 @@ exit = function(status, msg) {
 	process.exit(status ? 0 : 1);
 };
 
-main(process.argv);
+if(!module.parent) { // executed directly
+	main(process.argv);
+} else { // imported
+	exports.main = main;
+	exports.filename = __filename;
+}
