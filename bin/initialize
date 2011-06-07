@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+echo "downloading JSLint..."
+node ./wrapper.js --upgrade

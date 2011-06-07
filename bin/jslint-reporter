@@ -1,16 +1,18 @@
-#!/usr/bin/env sh
+#!/usr/bin/env node
 
-script_path=$(node <<EOF
-var jslr = require("../jslint-reporter");
-console.log(jslr.filename);
-EOF
-) # hacky, but is there an alternative?
+var jslr = require("../wrapper");
 
-err=`node "$script_path" --goodparts $@`
+// capture STDOUT
+var _stdout = process.stdout.write;
+process.stdout.write = function(string, encoding, fd) {
+	_stdout(typeof string);
+	if(string) {
+		_stdout(string);
+		// TODO: exit 1
+	} else { // XXX: never triggered?
+		// TODO: exit 0
+	}
+};
 
-if [ -z "$err" ]; then
-	exit 0
-else
-	echo "$err"
-	exit 1
-fi
+process.argv.splice(2, 0, "--goodparts");
+jslr.main(process.argv);

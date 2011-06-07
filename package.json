@@ -15,6 +15,6 @@
 	"main": "./wrapper.js",
 	"bin": "bin/jslint-reporter",
 	"scripts": {
-		"install": "bin/jslint-reporter --upgrade"
+		"install": "bin/initialize"
 	}
 }
