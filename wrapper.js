@@ -5,7 +5,7 @@ var fs = require("fs"),
 	vm = require("vm"),
 	util = require("util");
 
-var VERSION = "1.0.3";
+var VERSION = "1.1.0";
 var JSLINT_PATH = path.join(__dirname, "jslint.js");
 
 var getJSLint, formatOutput, transformWarning, parseOptions, exit;
@@ -41,16 +41,6 @@ var main = function(args) {
 		vm.runInNewContext(jslint, sandbox);
 		exit(true, "JSLint Reporter v" + VERSION + "\n" +
 			"JSLint v" + sandbox.JSLINT.edition);
-	}
-
-	// The Good Parts
-	if(opts.goodparts) {
-		delete opts.goodparts;
-		var goodparts = ["white", "onevar", "undef", "newcap", "nomen",
-			"regexp", "plusplus", "bitwise"];
-		goodparts.forEach(function(item, i) {
-			opts[item] = opts[item] !== false ? true : false;
-		});
 	}
 
 	if(verbose) {
