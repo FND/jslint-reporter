@@ -5,7 +5,7 @@ var fs = require("fs"),
 	vm = require("vm"),
 	util = require("util");
 
-var VERSION = "1.0.2";
+var VERSION = "1.0.3";
 var JSLINT_PATH = path.join(__dirname, "jslint.js");
 
 var getJSLint, formatOutput, transformWarning, parseOptions, exit;
@@ -99,8 +99,8 @@ var main = function(args) {
 getJSLint = function(callback) {
 	var https = require("https");
 	var options = {
-		host: "github.com",
-		path: "/douglascrockford/JSLint/raw/master/jslint.js"
+		host: "raw.github.com",
+		path: "/douglascrockford/JSLint/master/jslint.js"
 	};
 	https.get(options, function(response) {
 		if(response.statusCode !== 200) {
