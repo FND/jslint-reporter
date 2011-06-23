@@ -1,11 +1,13 @@
-/*jslint node: true, nomen: false */
+/*jslint vars: true, nomen: true, node: true */
+
+"use strict";
 
 var fs = require("fs"),
 	path = require("path"),
 	vm = require("vm"),
 	util = require("util");
 
-var VERSION = "1.1.0";
+var VERSION = "1.1.1";
 var JSLINT_PATH = path.join(__dirname, "jslint.js");
 
 var getJSLint, formatOutput, transformWarning, parseOptions, exit;
@@ -79,7 +81,7 @@ var main = function(args) {
 	if(!pass) {
 		util.print(errors.join("\n") + "\n");
 		if(verbose) {
-			process.stderr.write(errors.length + " errors\n");
+			process.stderr.write(String(errors.length) + " errors\n");
 		}
 	}
 
@@ -102,8 +104,7 @@ getJSLint = function(callback) {
 			body.push(chunk);
 		});
 		response.on("end", function() {
-			body = body.join("");
-			callback(body);
+			callback(body.join(""));
 		});
 	});
 };
@@ -147,9 +148,11 @@ parseOptions = function(args) {
 				var value = pair[1];
 
 				// infer value type
+				/*jslint confusion: true */
 				if(value === "false") {
 					value = false;
 				}
+				/*jslint confusion: false */
 				switch(name) { // XXX: special-casing JSLint-specifics
 					case "indent":
 					case "maxerr":
