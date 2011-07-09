@@ -7,7 +7,7 @@ var fs = require("fs"),
 	vm = require("vm"),
 	util = require("util");
 
-var VERSION = "1.1.1";
+var VERSION = "1.1.2";
 var JSLINT_PATH = path.join(__dirname, "jslint.js");
 
 var getJSLint, formatOutput, transformWarning, parseOptions, exit;
@@ -182,6 +182,7 @@ exit = function(status, msg) {
 	if(msg) {
 		process.stderr.write(msg + "\n");
 	}
+	process.stdout.flush();
 	process.exit(status ? 0 : 1);
 };
 
