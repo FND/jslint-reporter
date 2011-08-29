@@ -7,7 +7,7 @@ var fs = require("fs"),
 	vm = require("vm"),
 	util = require("util");
 
-var VERSION = "1.1.2";
+var VERSION = "1.1.3";
 var JSLINT_PATH = path.join(__dirname, "jslint.js");
 
 var getJSLint, formatOutput, transformWarning, parseOptions, exit;
@@ -36,7 +36,12 @@ var main = function(args) {
 		return;
 	}
 
-	var jslint = fs.readFileSync(JSLINT_PATH, "utf-8");
+	try {
+		var jslint = fs.readFileSync(JSLINT_PATH, "utf-8");
+	} catch(exc) {
+		exit(false, "ERROR: " + JSLINT_PATH + " not found - " +
+				"use `--upgrade` to initialize");
+	}
 
 	if(opts.version) {
 		var sandbox = {};
