@@ -7,7 +7,7 @@ var fs = require("fs"),
 	vm = require("vm"),
 	util = require("util");
 
-var VERSION = "1.1.3";
+var VERSION = "1.1.4";
 var JSLINT_PATH = path.join(__dirname, "jslint.js");
 
 var getJSLint, formatOutput, transformWarning, parseOptions, exit;
@@ -187,7 +187,9 @@ exit = function(status, msg) {
 	if(msg) {
 		process.stderr.write(msg + "\n");
 	}
-	process.stdout.flush();
+	try {
+		process.stdout.flush(); // required for legacy support (Node <0.5)?
+	} catch(exc) {}
 	process.exit(status ? 0 : 1);
 };
 
