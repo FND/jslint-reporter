@@ -7,7 +7,7 @@ var fs = require("fs"),
 	vm = require("vm"),
 	util = require("util");
 
-var VERSION = "1.1.4";
+var VERSION = "1.1.5";
 var JSLINT_PATH = path.join(__dirname, "jslint.js");
 
 var getJSLint, formatOutput, transformWarning, parseOptions, exit;
@@ -36,8 +36,9 @@ var main = function(args) {
 		return;
 	}
 
+	var jslint;
 	try {
-		var jslint = fs.readFileSync(JSLINT_PATH, "utf-8");
+		jslint = fs.readFileSync(JSLINT_PATH, "utf-8");
 	} catch(exc) {
 		exit(false, "ERROR: " + JSLINT_PATH + " not found - " +
 				"use `--upgrade` to initialize");
@@ -159,16 +160,16 @@ parseOptions = function(args) {
 				}
 				/*jslint confusion: false */
 				switch(name) { // XXX: special-casing JSLint-specifics
-					case "indent":
-					case "maxerr":
-					case "maxlen":
-						value = parseInt(value, 10);
-						break;
-					case "predef":
-						value = value.split(",");
-						break;
-					default:
-						break;
+				case "indent":
+				case "maxerr":
+				case "maxlen":
+					value = parseInt(value, 10);
+					break;
+				case "predef":
+					value = value.split(",");
+					break;
+				default:
+					break;
 				}
 
 				opts[name] = value;
