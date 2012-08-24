@@ -8,7 +8,7 @@ var fs = require("fs"),
 	util = require("util");
 
 var VERSION = "1.1.5";
-var JSLINT_PATH = path.join(__dirname, "jslint.js");
+var JSLINT_PATH = path.join(__dirname, "jshint.js");
 
 var getJSLint, formatOutput, transformWarning, parseOptions, exit;
 
@@ -48,7 +48,7 @@ var main = function(args) {
 		var sandbox = {};
 		vm.runInNewContext(jslint, sandbox);
 		exit(true, "JSLint Reporter v" + VERSION + "\n" +
-			"JSLint v" + sandbox.JSLINT.edition);
+			"JSHint v" + sandbox.JSHINT.edition);
 	}
 
 	if(verbose) {
@@ -61,7 +61,7 @@ var main = function(args) {
 			SRC: src,
 			OPTS: opts
 		};
-		var code = "JSLINT(SRC, OPTS); var data = JSLINT.data();";
+		var code = "JSHINT(SRC, OPTS); var data = JSHINT.data();";
 		vm.runInNewContext(jslint + "\n" + code, sandbox);
 
 		var data = sandbox.data;
@@ -98,7 +98,7 @@ getJSLint = function(callback) {
 	var https = require("https");
 	var options = {
 		host: "raw.github.com",
-		path: "/douglascrockford/JSLint/master/jslint.js"
+		path: "/jshint/jshint/master/jshint.js"
 	};
 	https.get(options, function(response) {
 		if(response.statusCode !== 200) {
