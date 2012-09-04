@@ -154,11 +154,9 @@ parseOptions = function(args) {
 				var value = pair[1];
 
 				// infer value type
-				/*jslint confusion: true */
 				if(value === "false") {
 					value = false;
 				}
-				/*jslint confusion: false */
 				switch(name) { // XXX: special-casing JSLint-specifics
 				case "indent":
 				case "maxerr":
