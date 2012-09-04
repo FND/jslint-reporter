@@ -7,8 +7,17 @@ var fs = require("fs"),
 	vm = require("vm"),
 	util = require("util");
 
-var VERSION = "1.1.5";
-var JSLINT_PATH = path.join(__dirname, "jshint.js");
+var VERSION = "1.2.0";
+var LINT = {
+	name: "JSLint",
+	filename: "jslint.js",
+	root: "JSLINT",
+	source: {
+		scheme: "https",
+		host: "raw.github.com",
+		path: "/douglascrockford/JSLint/master/jslint.js"
+	}
+};
 
 var getJSLint, formatOutput, transformWarning, parseOptions, exit;
 
@@ -17,6 +26,15 @@ var main = function(args) {
 	var opts = parseOptions(args);
 	var anon = opts.anon;
 	opts = opts.opts;
+
+	if(opts.jshint) {
+		delete opts.jshint;
+		LINT.name = "JSHint";
+		LINT.filename = "jshint.js";
+		LINT.root = "JSHINT";
+		LINT.source.path = "/jshint/jshint/master/jshint.js";
+	}
+	LINT.path = path.join(__dirname, LINT.filename);
 
 	var verbose = false;
 	if(opts.verbose) {
@@ -29,7 +47,7 @@ var main = function(args) {
 	}
 	if(opts.upgrade) {
 		getJSLint(function(contents) {
-			fs.writeFileSync(JSLINT_PATH, contents);
+			fs.writeFileSync(LINT.path, contents);
 			main([null, null, "--version"]); // XXX: hacky!?
 			exit(true);
 		});
@@ -38,9 +56,9 @@ var main = function(args) {
 
 	var jslint;
 	try {
-		jslint = fs.readFileSync(JSLINT_PATH, "utf-8");
+		jslint = fs.readFileSync(LINT.path, "utf-8");
 	} catch(exc) {
-		exit(false, "ERROR: " + JSLINT_PATH + " not found - " +
+		exit(false, "ERROR: " + LINT.path + " not found - " +
 				"use `--upgrade` to initialize");
 	}
 
@@ -48,7 +66,7 @@ var main = function(args) {
 		var sandbox = {};
 		vm.runInNewContext(jslint, sandbox);
 		exit(true, "JSLint Reporter v" + VERSION + "\n" +
-			"JSHint v" + sandbox.JSHINT.edition);
+				LINT.name + " v" + sandbox[LINT.root].edition);
 	}
 
 	if(verbose) {
@@ -61,7 +79,7 @@ var main = function(args) {
 			SRC: src,
 			OPTS: opts
 		};
-		var code = "JSHINT(SRC, OPTS); var data = JSHINT.data();";
+		var code = LINT.root + "(SRC, OPTS); var data = " + LINT.root + ".data();";
 		vm.runInNewContext(jslint + "\n" + code, sandbox);
 
 		var data = sandbox.data;
@@ -95,10 +113,10 @@ var main = function(args) {
 };
 
 getJSLint = function(callback) {
-	var https = require("https");
+	var https = require(LINT.source.scheme);
 	var options = {
-		host: "raw.github.com",
-		path: "/jshint/jshint/master/jshint.js"
+		host: LINT.source.host,
+		path: LINT.source.path
 	};
 	https.get(options, function(response) {
 		if(response.statusCode !== 200) {

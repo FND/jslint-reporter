@@ -1,5 +1,5 @@
 JSLint Reporter
-Node.js wrapper for JSLint (http://jslint.com)
+Node.js wrapper for JSLint (http://jslint.com) and JSHint (http://www.jshint.com)
 
 
 Usage:
@@ -14,6 +14,9 @@ Options:
   --<name>[=<value>]
     names as per http://www.jslint.com/lint.html#options
     (e.g. "--vars --predef=foo,bar,baz --maxlen=80")
+
+  --jshint
+    use JSHint instead of JSLint
 
   --upgrade
     download latest version of JSLint
