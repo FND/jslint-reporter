@@ -1,4 +1,4 @@
-/*jslint vars: true, nomen: true, node: true */
+/*jslint vars: true, nomen: true, node: true, white: true */
 
 "use strict";
 
@@ -7,7 +7,7 @@ var fs = require("fs"),
 	vm = require("vm"),
 	util = require("util");
 
-var VERSION = "1.2.0";
+var VERSION = "1.3.0";
 var LINT = {
 	name: "JSLint",
 	filename: "jslint.js",
@@ -19,7 +19,7 @@ var LINT = {
 	}
 };
 
-var getJSLint, formatOutput, transformWarning, parseOptions, exit;
+var getJSLint, formatOutput, transformWarning, parseOptions, supplant, exit;
 
 var main = function(args) {
 	args = args.slice(2); // ignore Node command and script file
@@ -97,7 +97,7 @@ var main = function(args) {
 	for(i = 0; i < anon.length; i += 1) {
 		var filepath = anon[i];
 		var err = doLint(filepath);
-		err = formatOutput(err, filepath);
+		err = formatOutput(err, filepath, opts.format);
 		errors = errors.concat(err);
 	}
 	var pass = errors.length === 0;
@@ -133,14 +133,24 @@ getJSLint = function(callback) {
 	});
 };
 
-formatOutput = function(errors, filepath) {
+// `format` is an optional string with the following placeholders:
+// {f}: file
+// {l}: line
+// {c}: character
+// {m}: message
+formatOutput = function(errors, filepath, format) {
+	format = format || "{f}:{l}:{c}:{m}";
 	var lines = [];
 	var i;
 	for(i = 0; i < errors.length; i += 1) {
 		var error = errors[i];
 		if(error) { // last item might be null (if linting was aborted)
-			var line = [filepath, error.line, error.character, error.reason].
-				join(":");
+			var line = supplant(format, {
+				f: filepath,
+				l: error.line,
+				c: error.character,
+				m: error.reason
+			});
 			lines.push(line);
 		}
 	}
@@ -198,6 +208,16 @@ parseOptions = function(args) {
 		opts: opts,
 		anon: anon
 	};
+};
+
+// adapted from Crockford:
+// http://javascript.crockford.com/remedial.html
+supplant = function(str, params) {
+	return str.replace(/\{([^{}]*)\}/g, function(placeholder, key) {
+		var sub = params[key];
+		return (typeof sub === "string" || typeof sub === "number") ?  sub :
+				placeholder;
+	});
 };
 
 exit = function(status, msg) {

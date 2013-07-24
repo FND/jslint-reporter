@@ -15,6 +15,11 @@ Options:
     names as per http://www.jslint.com/lint.html#options
     (e.g. "--vars --predef=foo,bar,baz --maxlen=80")
 
+  --format=<format>
+    output format, using the following placeholders:
+    {f}: file    {l}: line    {c}: character    {m}: message
+    defaults to "{f}:{l}:{c}:{m}"
+
   --jshint
     use JSHint instead of JSLint
 
