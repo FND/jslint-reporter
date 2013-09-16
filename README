@@ -4,9 +4,9 @@ Node.js wrapper for JSLint (http://jslint.com) and JSHint (http://www.jshint.com
 
 Usage:
 
-  $ node wrapper.js [options] <filepath>
+  $ jslint-reporter [options] <filepath>
 
-(use `node wrapper.js --upgrade` to generate jslint.js alongside wrapper.js)
+(use `--upgrade` to generate jslint.js alongside wrapper.js)
 
 
 Options:
