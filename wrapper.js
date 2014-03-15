@@ -7,7 +7,7 @@ var fs = require("fs"),
 	vm = require("vm"),
 	util = require("util");
 
-var VERSION = "1.3.0";
+var VERSION = "1.3.1";
 var LINT = {
 	name: "JSLint",
 	filename: "jslint.js",
@@ -32,7 +32,7 @@ var main = function(args) {
 		LINT.name = "JSHint";
 		LINT.filename = "jshint.js";
 		LINT.root = "JSHINT";
-		LINT.source.path = "/jshint/jshint/master/jshint.js";
+		LINT.source.path = "/jshint/jshint/2.x/dist/jshint.js";
 	}
 	LINT.path = path.join(__dirname, LINT.filename);
 
@@ -103,7 +103,7 @@ var main = function(args) {
 	var pass = errors.length === 0;
 
 	if(!pass) {
-		util.print(errors.join("\n") + "\n");
+		console.log(errors.join("\n") + "\n");
 		if(verbose) {
 			process.stderr.write(String(errors.length) + " errors\n");
 		}
