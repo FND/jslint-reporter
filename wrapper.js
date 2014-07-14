@@ -14,7 +14,7 @@ var LINT = {
 	root: "JSLINT",
 	source: {
 		scheme: "https",
-		host: "raw.github.com",
+		host: "raw.githubusercontent.com",
 		path: "/douglascrockford/JSLint/master/jslint.js"
 	}
 };
