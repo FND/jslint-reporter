@@ -32,7 +32,7 @@ var main = function(args) {
 		LINT.name = "JSHint";
 		LINT.filename = "jshint.js";
 		LINT.root = "JSHINT";
-		LINT.source.path = "/jshint/jshint/2.x/dist/jshint.js";
+		LINT.source.path = "/jshint/jshint/master/dist/jshint.js";
 	}
 	LINT.path = path.join(__dirname, LINT.filename);
 
