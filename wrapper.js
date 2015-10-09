@@ -11,7 +11,7 @@ var VERSION = "1.3.1";
 var LINT = {
 	name: "JSLint",
 	filename: "jslint.js",
-	root: "JSLINT",
+	root: "jslint",
 	source: {
 		scheme: "https",
 		host: "raw.githubusercontent.com",
@@ -66,7 +66,7 @@ var main = function(args) {
 		var sandbox = {};
 		vm.runInNewContext(jslint, sandbox);
 		exit(true, "JSLint Reporter v" + VERSION + "\n" +
-				LINT.name + " v" + sandbox[LINT.root].edition);
+				LINT.name + " v" + sandbox[LINT.root]().edition);
 	}
 
 	if(verbose) {
