@@ -7,7 +7,7 @@ var fs = require("fs"),
 	vm = require("vm"),
 	util = require("util");
 
-var VERSION = "1.3.1";
+var VERSION = "1.4.0";
 var LINT = {
 	name: "JSLint",
 	filename: "jslint.js",
@@ -27,13 +27,6 @@ var main = function(args) {
 	var anon = opts.anon;
 	opts = opts.opts;
 
-	if(opts.jshint) {
-		delete opts.jshint;
-		LINT.name = "JSHint";
-		LINT.filename = "jshint.js";
-		LINT.root = "JSHINT";
-		LINT.source.path = "/jshint/jshint/master/dist/jshint.js";
-	}
 	LINT.path = path.join(__dirname, LINT.filename);
 
 	var verbose = false;
@@ -79,17 +72,10 @@ var main = function(args) {
 			SRC: src,
 			OPTS: opts
 		};
-		var code = LINT.root + "(SRC, OPTS); var data = " + LINT.root + ".data();";
-		vm.runInNewContext(jslint + "\n" + code, sandbox);
+		var code = "var data = " + LINT.root + "(SRC, OPTS);";
 
-		var data = sandbox.data;
-		var implied = (data.implieds || []).map(function(item) {
-			return transformWarning(item, "implied global");
-		});
-		var unused = (data.unused || []).map(function(item) {
-			return transformWarning(item, "unused variable");
-		});
-		return (data.errors || []).concat(implied).concat(unused);
+		vm.runInNewContext(jslint + "\n" + code, sandbox);
+		return sandbox.data.warnings.map(transformWarning);
 	};
 
 	var errors = [];
@@ -157,12 +143,12 @@ formatOutput = function(errors, filepath, format) {
 	return lines;
 };
 
-// generate an error (line, character, reason) from a warning (line, name)
-transformWarning = function(item, prefix) {
+// generate an error from a warning
+transformWarning = function(item) {
 	return {
 		line: item.line,
-		character: 0,
-		reason: prefix + ": " + item.name
+		character: item.column,
+		reason: item.message
 	};
 };
 

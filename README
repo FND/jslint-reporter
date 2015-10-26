@@ -1,5 +1,5 @@
 JSLint Reporter
-Node.js wrapper for JSLint (http://jslint.com) and JSHint (http://www.jshint.com)
+Node.js wrapper for JSLint (http://jslint.com)
 
 
 Usage:
@@ -19,9 +19,6 @@ Options:
     output format, using the following placeholders:
     {f}: file    {l}: line    {c}: character    {m}: message
     defaults to "{f}:{l}:{c}:{m}"
-
-  --jshint
-    use JSHint instead of JSLint
 
   --upgrade
     download latest version of JSLint
