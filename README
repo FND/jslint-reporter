@@ -1,5 +1,13 @@
 JSLint Reporter
-Node.js wrapper for JSLint (http://jslint.com)
+Node.js wrapper for JSLint <http://jslint.com>
+
+
+----
+
+⚠ NOTE: This wrapper no longer constitutes the state of the art. We recommend
+        using one of the alternatives listed below.
+
+----
 
 
 Usage:
@@ -33,6 +41,9 @@ Options:
     display this usage information
 
 
-Alternatives:
+Alternatives
+------------
 
-see https://github.com/douglascrockford/JSLint/wiki/JSLINT
+* see <https://github.com/douglascrockford/JSLint/wiki/JSLINT>
+* JSHint <http://jshint.com>
+* ESLint <http://eslint.org>
